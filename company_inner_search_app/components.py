@@ -35,20 +35,19 @@ def display_select_mode():
         # label_visibility="collapsed" は削除
     )
 
-    def display_sidebar():
-        """サイドバーの表示（利用目的＋入力例）"""
-    with st.sidebar:
-        st.markdown("## 利用目的")
+    # def display_sidebar():
+    #     """サイドバーの表示（利用目的＋入力例）"""
+    # with st.sidebar:
+    #     st.markdown("## 利用目的")
 
-        col1, col2 = st.columns([100, 1])
-        with col1:
-            st.session_state.mode = st.radio(
-                label="",
-                options=[ct.ANSWER_MODE_1, ct.ANSWER_MODE_2],
-                label_visibility="collapsed",
-            )
+    #     col1, col2 = st.columns([100, 1])
+    #     with col1:
+    #         st.session_state.mode = st.radio(
+    #             label="",
+    #             options=[ct.ANSWER_MODE_1, ct.ANSWER_MODE_2]
+    #         )
 
-        st.divider()
+    #     st.divider()
 
     # 2. 選択肢ごとの詳細な説明を表示
 
@@ -72,94 +71,163 @@ def display_select_mode():
     st.sidebar.markdown('人事部に**関連している定常情報**を**一貫して**') # 修正前のst.codeの内容をmarkdownに変更
 
 def display_initial_ai_message():
-     """AIメッセージの初期表示（メイン画面）"""
-     with st.chat_message("assistant"):
+    """AIメッセージの初期表示（メイン画面）"""
+    with st.chat_message("assistant"):
         st.success(
             "こんにちは。私は社内文書の情報をもとに回答する生成AIチャットボットです。"
             "サイドバーで利用目的を選択し、画面下部のチャット欄からメッセージを送信してください。"
         )
         st.warning("具体的に入力したほうが期待通りの回答を得やすいです。", icon=ct.WARNING_ICON)
 
+# def display_conversation_log():
+#     """
+#     会話ログの一覧表示
+#     """
+#     # 会話ログのループ処理
+#     for message in st.session_state.messages:
+#         # 「message」辞書の中の「role」キーには「user」か「assistant」が入っている
+#         with st.chat_message(message["role"]):
+
+#             # ユーザー入力値の場合、そのままテキストを表示するだけ
+#             if message["role"] == "user":
+#                 st.markdown(message["content"])
+            
+#             # LLMからの回答の場合
+#             else:
+#                 mode = message["content"].get("mode")
+#                 # 「社内文書検索」の場合、テキストの種類に応じて表示形式を分岐処理
+#                 if message["content"]["mode"] == ct.ANSWER_MODE_1:
+                    
+#                     # ファイルのありかの情報が取得できた場合（通常時）の表示処理
+#                     if not "no_file_path_flg" in message["content"]:
+#                         # ==========================================
+#                         # ユーザー入力値と最も関連性が高いメインドキュメントのありかを表示
+#                         # ==========================================
+#                         # 補足文の表示
+#                         st.markdown(message["content"]["main_message"])
+
+#                         # 参照元のありかに応じて、適したアイコンを取得
+#                         icon = utils.get_source_icon(message['content']['main_file_path'])
+#                         # 参照元ドキュメントのページ番号が取得できた場合にのみ、ページ番号を表示
+#                         if "main_page_number" in message["content"]:
+#                             st.success(f"{message['content']['main_file_path']}(ページNo.{message['content']['main_page_number'] + 1})", icon=icon)
+#                             p = message["content"]["main_page_number"] + 1
+#                             st.success(f"{message['content']['main_file_path']}（ページNo.{p}）", icon=icon)
+#                         else:
+#                             st.success(f"{message['content']['main_file_path']}", icon=icon)
+                        
+#                         # ==========================================
+#                         # ユーザー入力値と関連性が高いサブドキュメントのありかを表示
+#                         # ==========================================
+#                         if "sub_message" in message["content"]:
+#                             # 補足メッセージの表示
+#                             st.markdown(message["content"]["sub_message"])
+
+#                             # サブドキュメントのありかを一覧表示
+#                             for sub_choice in message["content"]["sub_choices"]:
+#                                 # 参照元のありかに応じて、適したアイコンを取得
+#                                 icon = utils.get_source_icon(sub_choice['source'])
+#                                 # 参照元ドキュメントのページ番号が取得できた場合にのみ、ページ番号を表示
+#                                 if "page_number" in sub_choice:
+#                                     p = sub_choice["page_number"] + 1
+#                                     st.info(f"{sub_choice['source']}(ページNo.{sub_choice['page_number'] + 1})", icon=icon)
+#                                 else:
+#                                     st.info(f"{sub_choice['source']}", icon=icon)
+#                     # ファイルのありかの情報が取得できなかった場合、LLMからの回答のみ表示
+#                     else:
+#                         st.markdown(message["content"]["answer"])
+#                 else:
+#                     st.markdown(message["content"]["answer"])
+#                 if "file_info_list" in message["content"]:
+#                         st.divider()
+#                         st.markdown(f"##### {message['content']['message']}")
+#                         for file_info in message["content"]["file_info_list"]:
+#                             icon = utils.get_source_icon(file_info)
+#                             st.info(file_info, icon=icon)
+#                 # 「社内問い合わせ」の場合の表示処理
+#                 else:
+#                     # LLMからの回答を表示
+#                     st.markdown(message["content"]["answer"])
+
+#                     # 参照元のありかを一覧表示
+#                     if "file_info_list" in message["content"]:
+#                         # 区切り線の表示
+#                         st.divider()
+#                         # 「情報源」の文字を太字で表示
+#                         st.markdown(f"##### {message['content']['message']}")
+#                         # ドキュメントのありかを一覧表示
+#                         for file_info in message["content"]["file_info_list"]:
+#                             # 参照元のありかに応じて、適したアイコンを取得
+#                             icon = utils.get_source_icon(file_info)
+#                             st.info(file_info, icon=icon)
 def display_conversation_log():
     """
-    会話ログの一覧表示
+    会話ログの一覧表示（ネストほぼゼロ版）
     """
-    # 会話ログのループ処理
     for message in st.session_state.messages:
-        # 「message」辞書の中の「role」キーには「user」か「assistant」が入っている
         with st.chat_message(message["role"]):
 
-            # ユーザー入力値の場合、そのままテキストを表示するだけ
+            # --------------------------
+            # ユーザー入力はそのまま表示
+            # --------------------------
             if message["role"] == "user":
                 st.markdown(message["content"])
-            
-            # LLMからの回答の場合
-            else:
-                # 「社内文書検索」の場合、テキストの種類に応じて表示形式を分岐処理
-                if message["content"]["mode"] == ct.ANSWER_MODE_1:
-                    
-                    # ファイルのありかの情報が取得できた場合（通常時）の表示処理
-                    if not "no_file_path_flg" in message["content"]:
-                        # ==========================================
-                        # ユーザー入力値と最も関連性が高いメインドキュメントのありかを表示
-                        # ==========================================
-                        # 補足文の表示
-                        st.markdown(message["content"]["main_message"])
+                continue  # 次のメッセージへ
 
-                        # 参照元のありかに応じて、適したアイコンを取得
-                        icon = utils.get_source_icon(message['content']['main_file_path'])
-                        # 参照元ドキュメントのページ番号が取得できた場合にのみ、ページ番号を表示
-                        if "main_page_number" in message["content"]:
-                            st.success(f"{message['content']['main_file_path']}(ページNo.{message['content']['main_page_number'] + 1})", icon=icon)
-                            p = message["content"]["main_page_number"] + 1
-                            st.success(f"{message['content']['main_file_path']}（ページNo.{p}）", icon=icon)
-                        else:
-                            st.success(f"{message['content']['main_file_path']}", icon=icon)
-                        
-                        # ==========================================
-                        # ユーザー入力値と関連性が高いサブドキュメントのありかを表示
-                        # ==========================================
-                        if "sub_message" in message["content"]:
-                            # 補足メッセージの表示
-                            st.markdown(message["content"]["sub_message"])
+            # --------------------------
+            # LLMの回答を処理
+            # --------------------------
+            content = message["content"]
+            mode = content.get("mode")
 
-                            # サブドキュメントのありかを一覧表示
-                            for sub_choice in message["content"]["sub_choices"]:
-                                # 参照元のありかに応じて、適したアイコンを取得
-                                icon = utils.get_source_icon(sub_choice['source'])
-                                # 参照元ドキュメントのページ番号が取得できた場合にのみ、ページ番号を表示
-                                if "page_number" in sub_choice:
-                                    p = sub_choice["page_number"] + 1
-                                    st.info(f"{sub_choice['source']}(ページNo.{sub_choice['page_number'] + 1})", icon=icon)
-                                else:
-                                    st.info(f"{sub_choice['source']}", icon=icon)
-                    # ファイルのありかの情報が取得できなかった場合、LLMからの回答のみ表示
+            # --------------------------
+            # 社内文書検索モード
+            # --------------------------
+            if mode == ct.ANSWER_MODE_1:
+                if "no_file_path_flg" not in content:
+                    # メインメッセージ
+                    st.markdown(content.get("main_message", ""))
+
+                    # メインファイル表示
+                    icon = utils.get_source_icon(content.get('main_file_path', ""))
+                    main_page = content.get("main_page_number")
+                    if main_page is not None:
+                        p = main_page + 1
+                        st.success(f"{content['main_file_path']}（ページNo.{p}）", icon=icon)
                     else:
-                        st.markdown(message["content"]["answer"])
-                else:
-                    st.markdown(message["content"]["answer"])
-                if "file_info_list" in message["content"]:
-                        st.divider()
-                        st.markdown(f"##### {message['content']['message']}")
-                        for file_info in message["content"]["file_info_list"]:
-                            icon = utils.get_source_icon(file_info)
-                            st.info(file_info, icon=icon)
-                # 「社内問い合わせ」の場合の表示処理
-                else:
-                    # LLMからの回答を表示
-                    st.markdown(message["content"]["answer"])
+                        st.success(content.get('main_file_path', ""), icon=icon)
 
-                    # 参照元のありかを一覧表示
-                    if "file_info_list" in message["content"]:
-                        # 区切り線の表示
-                        st.divider()
-                        # 「情報源」の文字を太字で表示
-                        st.markdown(f"##### {message['content']['message']}")
-                        # ドキュメントのありかを一覧表示
-                        for file_info in message["content"]["file_info_list"]:
-                            # 参照元のありかに応じて、適したアイコンを取得
-                            icon = utils.get_source_icon(file_info)
-                            st.info(file_info, icon=icon)
+                    # サブドキュメント表示
+                    sub_message = content.get("sub_message")
+                    sub_choices = content.get("sub_choices", [])
+                    if sub_message:
+                        st.markdown(sub_message)
+                    for sub in sub_choices:
+                        icon = utils.get_source_icon(sub['source'])
+                        page = sub.get("page_number")
+                        text = f"{sub['source']}（ページNo.{page + 1}）" if page is not None else sub['source']
+                        st.info(text, icon=icon)
+                
+                else:
+                    # ファイル情報なしの場合は回答だけ表示
+                    st.markdown(content.get("answer", ""))
+
+            # --------------------------
+            # 社内問い合わせモード
+            # --------------------------
+            else:
+                st.markdown(content.get("answer", ""))
+
+            # --------------------------
+            # 共通：file_info_listがあれば表示
+            # --------------------------
+            file_list = content.get("file_info_list", [])
+            if file_list:
+                st.divider()
+                st.markdown(f"##### {content.get('message', '情報源')}")
+                for file_info in file_list:
+                    icon = utils.get_source_icon(file_info)
+                    st.info(file_info, icon=icon)
 
 
 def display_search_llm_response(llm_response):
@@ -256,7 +324,8 @@ def display_search_llm_response(llm_response):
                 if "page_number" in sub_choice:
                     p = sub_choice["page_number"] + 1
                     # 「サブドキュメントのファイルパス」と「ページ番号」を表示
-                    st.info(f"{sub_choice['source']}(ページNo.{p})", icon=icon)
+                    page = sub_choice["page_number"] + 1
+                    st.info(f"{sub_choice['source']}(ページNo.{page})", icon=icon)
                 else:
                     # 「サブドキュメントのファイルパス」を表示
                     st.info(f"{sub_choice['source']}", icon=icon)
@@ -334,7 +403,8 @@ def display_contact_llm_response(llm_response):
                 # ページ番号を取得
                 page_number = document.metadata["page"]
                 # 「ファイルパス」と「ページ番号」
-                file_info = f"{file_path}(ページNo.{p})"
+                page = document.metadata["page"] + 1
+                file_info = f"{file_path}(ページNo.{page})"
             else:
                 # 「ファイルパス」のみ
                 file_info = f"{file_path}"
